@@ -1,0 +1,14 @@
+services:
+  films-manager-db:
+    image: "bitnami/postgresql:latest"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=films_manager
+    volumes:
+      - ./.postgres-data:/bitnami/postgresql
+
+volumes:
+  .postgres-data:
