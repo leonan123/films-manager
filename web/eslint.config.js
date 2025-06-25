@@ -20,6 +20,7 @@ export default tseslint.config([
       'simple-import-sort': simpleImportSort,
     },
     rules: {
+      'react-refresh/only-export-components': 'off',
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       '@typescript-eslint/no-unused-vars': [
