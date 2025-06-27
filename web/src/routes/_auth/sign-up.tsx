@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { InputWithIcon } from '@/components/ui/input'
+import { authClient } from '@/lib/auth'
 import { seo } from '@/utils/seo'
 
 export const Route = createFileRoute('/_auth/sign-up')({
@@ -43,8 +44,14 @@ function RouteComponent() {
     },
   })
 
-  function onSubmit(values: signUpData) {
-    console.log(values)
+  async function onSubmit(values: signUpData) {
+    const response = await authClient.signUp.email({
+      email: values.email,
+      password: values.password,
+      name: values.name,
+    })
+
+    console.log(response)
   }
 
   return (

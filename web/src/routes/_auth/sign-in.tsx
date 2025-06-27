@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EnvelopeIcon, PasswordIcon } from '@phosphor-icons/react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { InputWithIcon } from '@/components/ui/input'
+import { authClient } from '@/lib/auth'
 import { seo } from '@/utils/seo'
 
 export const Route = createFileRoute('/_auth/sign-in')({
@@ -33,6 +34,7 @@ const signInSchema = z.object({
 type signInData = z.infer<typeof signInSchema>
 
 function RouteComponent() {
+  const navigate = useNavigate()
   const form = useForm<signInData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -41,8 +43,20 @@ function RouteComponent() {
     },
   })
 
-  function onSubmit(values: signInData) {
-    console.log(values)
+  async function onSubmit(values: signInData) {
+    const { data, error } = await authClient.signIn.email({
+      email: values.email,
+      password: values.password,
+    })
+
+    if (error) {
+      console.log(error)
+      return
+    }
+
+    if (data?.user) {
+      navigate({ to: '/' })
+    }
   }
 
   return (

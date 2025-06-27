@@ -1,26 +1,34 @@
 import fastifyCors from '@fastify/cors'
+import { fromNodeHeaders } from 'better-auth/node'
 import { fastify } from 'fastify'
 
 import { auth } from './lib/auth'
 
-const app = fastify({ logger: true })
+const app = fastify()
 
 app.register(fastifyCors, {
-  origin: ['http://localhost:3000', 'http://localhost:5173'],
+  origin: ['http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
   credentials: true,
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  exposedHeaders: ['Set-Cookie'],
   maxAge: 86400,
 })
 
-app.get('/hello', () => {
-  return 'Hello World'
+app.get('/rotateste', async (req, reply) => {
+  const session = await auth.api.getSession({
+    headers: fromNodeHeaders(req.headers),
+  })
+
+  console.log(session)
+  return reply.status(200).send(session)
 })
 
 app.route({
   method: ['GET', 'POST'],
   url: '/api/auth/*',
   async handler(request, reply) {
+    console.log(request.url)
     try {
       const url = new URL(request.url, `http://${request.headers.host}`)
       const headers = new Headers()
