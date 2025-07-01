@@ -27,8 +27,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import { seo } from '@/utils/seo'
 
 export const Route = createFileRoute('/_protected/my-films/new/')({
+  head: () => ({
+    meta: [...seo({ title: 'Novo filme' })],
+  }),
   component: NewFilmPage,
 })
 
@@ -137,9 +141,6 @@ function NewFilmPage() {
                         defaultValue={field.value}
                       >
                         <FormControl>
-                          {/* <SelectTrigger className="w-full">
-                            <SelectValue placeholder="Categoria" />
-                          </SelectTrigger> */}
                           <SelectTriggerWithIcon
                             icon={TagIcon}
                             className="w-full"
@@ -173,7 +174,7 @@ function NewFilmPage() {
                     <FormLabel className="sr-only">Descrição</FormLabel>
                     <FormControl>
                       <Textarea
-                        placeholder="Description"
+                        placeholder="Descrição"
                         className="min-h-[200px] resize-none"
                         {...field}
                       />

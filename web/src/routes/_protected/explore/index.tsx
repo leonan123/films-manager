@@ -1,8 +1,17 @@
 import { createFileRoute } from '@tanstack/react-router'
 
+import { seo } from '@/utils/seo'
+
 import { SearchFilmsForm } from '../-components/search-films-form'
 
 export const Route = createFileRoute('/_protected/explore/')({
+  head: () => ({
+    meta: [
+      ...seo({
+        title: 'Explorar',
+      }),
+    ],
+  }),
   component: ExploreFilmsPage,
 })
 
