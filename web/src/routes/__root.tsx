@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 
+import { QueryClientProvider } from '@tanstack/react-query'
 import {
   createRootRoute,
   HeadContent,
@@ -7,6 +8,8 @@ import {
   Scripts,
 } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
+
+import { queryClient } from '@/lib/react-query'
 
 import appCss from '../styles/app.css?url'
 
@@ -67,8 +70,10 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
         <HeadContent />
       </head>
       <body>
-        {children}
-        <Scripts />
+        <QueryClientProvider client={queryClient}>
+          {children}
+          <Scripts />
+        </QueryClientProvider>
       </body>
     </html>
   )

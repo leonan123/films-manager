@@ -11,12 +11,11 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProtectedRouteRouteImport } from './routes/_protected/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
-import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthSignUpRouteImport } from './routes/_auth/sign-up'
 import { Route as AuthSignInRouteImport } from './routes/_auth/sign-in'
-import { Route as ProtectedMyFilmsIndexRouteImport } from './routes/_protected/my-films/index'
+import { Route as ProtectedMyMoviesIndexRouteImport } from './routes/_protected/my-movies/index'
 import { Route as ProtectedExploreIndexRouteImport } from './routes/_protected/explore/index'
-import { Route as ProtectedMyFilmsNewIndexRouteImport } from './routes/_protected/my-films/new/index'
+import { Route as ProtectedMyMoviesNewIndexRouteImport } from './routes/_protected/my-movies/new/index'
 
 const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
   id: '/_protected',
@@ -24,11 +23,6 @@ const ProtectedRouteRoute = ProtectedRouteRouteImport.update({
 } as any)
 const AuthRouteRoute = AuthRouteRouteImport.update({
   id: '/_auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthSignUpRoute = AuthSignUpRouteImport.update({
@@ -41,9 +35,9 @@ const AuthSignInRoute = AuthSignInRouteImport.update({
   path: '/sign-in',
   getParentRoute: () => AuthRouteRoute,
 } as any)
-const ProtectedMyFilmsIndexRoute = ProtectedMyFilmsIndexRouteImport.update({
-  id: '/my-films/',
-  path: '/my-films/',
+const ProtectedMyMoviesIndexRoute = ProtectedMyMoviesIndexRouteImport.update({
+  id: '/my-movies/',
+  path: '/my-movies/',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
 const ProtectedExploreIndexRoute = ProtectedExploreIndexRouteImport.update({
@@ -51,65 +45,59 @@ const ProtectedExploreIndexRoute = ProtectedExploreIndexRouteImport.update({
   path: '/explore/',
   getParentRoute: () => ProtectedRouteRoute,
 } as any)
-const ProtectedMyFilmsNewIndexRoute =
-  ProtectedMyFilmsNewIndexRouteImport.update({
-    id: '/my-films/new/',
-    path: '/my-films/new/',
+const ProtectedMyMoviesNewIndexRoute =
+  ProtectedMyMoviesNewIndexRouteImport.update({
+    id: '/my-movies/new/',
+    path: '/my-movies/new/',
     getParentRoute: () => ProtectedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
   '/explore': typeof ProtectedExploreIndexRoute
-  '/my-films': typeof ProtectedMyFilmsIndexRoute
-  '/my-films/new': typeof ProtectedMyFilmsNewIndexRoute
+  '/my-movies': typeof ProtectedMyMoviesIndexRoute
+  '/my-movies/new': typeof ProtectedMyMoviesNewIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/sign-in': typeof AuthSignInRoute
   '/sign-up': typeof AuthSignUpRoute
   '/explore': typeof ProtectedExploreIndexRoute
-  '/my-films': typeof ProtectedMyFilmsIndexRoute
-  '/my-films/new': typeof ProtectedMyFilmsNewIndexRoute
+  '/my-movies': typeof ProtectedMyMoviesIndexRoute
+  '/my-movies/new': typeof ProtectedMyMoviesNewIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_protected': typeof ProtectedRouteRouteWithChildren
   '/_auth/sign-in': typeof AuthSignInRoute
   '/_auth/sign-up': typeof AuthSignUpRoute
   '/_protected/explore/': typeof ProtectedExploreIndexRoute
-  '/_protected/my-films/': typeof ProtectedMyFilmsIndexRoute
-  '/_protected/my-films/new/': typeof ProtectedMyFilmsNewIndexRoute
+  '/_protected/my-movies/': typeof ProtectedMyMoviesIndexRoute
+  '/_protected/my-movies/new/': typeof ProtectedMyMoviesNewIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/sign-in'
     | '/sign-up'
     | '/explore'
-    | '/my-films'
-    | '/my-films/new'
+    | '/my-movies'
+    | '/my-movies/new'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sign-in' | '/sign-up' | '/explore' | '/my-films' | '/my-films/new'
+  to: '/sign-in' | '/sign-up' | '/explore' | '/my-movies' | '/my-movies/new'
   id:
     | '__root__'
-    | '/'
     | '/_auth'
     | '/_protected'
     | '/_auth/sign-in'
     | '/_auth/sign-up'
     | '/_protected/explore/'
-    | '/_protected/my-films/'
-    | '/_protected/my-films/new/'
+    | '/_protected/my-movies/'
+    | '/_protected/my-movies/new/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   ProtectedRouteRoute: typeof ProtectedRouteRouteWithChildren
 }
@@ -130,13 +118,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_auth/sign-up': {
       id: '/_auth/sign-up'
       path: '/sign-up'
@@ -151,11 +132,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignInRouteImport
       parentRoute: typeof AuthRouteRoute
     }
-    '/_protected/my-films/': {
-      id: '/_protected/my-films/'
-      path: '/my-films'
-      fullPath: '/my-films'
-      preLoaderRoute: typeof ProtectedMyFilmsIndexRouteImport
+    '/_protected/my-movies/': {
+      id: '/_protected/my-movies/'
+      path: '/my-movies'
+      fullPath: '/my-movies'
+      preLoaderRoute: typeof ProtectedMyMoviesIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
     '/_protected/explore/': {
@@ -165,11 +146,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedExploreIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
-    '/_protected/my-films/new/': {
-      id: '/_protected/my-films/new/'
-      path: '/my-films/new'
-      fullPath: '/my-films/new'
-      preLoaderRoute: typeof ProtectedMyFilmsNewIndexRouteImport
+    '/_protected/my-movies/new/': {
+      id: '/_protected/my-movies/new/'
+      path: '/my-movies/new'
+      fullPath: '/my-movies/new'
+      preLoaderRoute: typeof ProtectedMyMoviesNewIndexRouteImport
       parentRoute: typeof ProtectedRouteRoute
     }
   }
@@ -191,14 +172,14 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 
 interface ProtectedRouteRouteChildren {
   ProtectedExploreIndexRoute: typeof ProtectedExploreIndexRoute
-  ProtectedMyFilmsIndexRoute: typeof ProtectedMyFilmsIndexRoute
-  ProtectedMyFilmsNewIndexRoute: typeof ProtectedMyFilmsNewIndexRoute
+  ProtectedMyMoviesIndexRoute: typeof ProtectedMyMoviesIndexRoute
+  ProtectedMyMoviesNewIndexRoute: typeof ProtectedMyMoviesNewIndexRoute
 }
 
 const ProtectedRouteRouteChildren: ProtectedRouteRouteChildren = {
   ProtectedExploreIndexRoute: ProtectedExploreIndexRoute,
-  ProtectedMyFilmsIndexRoute: ProtectedMyFilmsIndexRoute,
-  ProtectedMyFilmsNewIndexRoute: ProtectedMyFilmsNewIndexRoute,
+  ProtectedMyMoviesIndexRoute: ProtectedMyMoviesIndexRoute,
+  ProtectedMyMoviesNewIndexRoute: ProtectedMyMoviesNewIndexRoute,
 }
 
 const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
@@ -206,7 +187,6 @@ const ProtectedRouteRouteWithChildren = ProtectedRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
   AuthRouteRoute: AuthRouteRouteWithChildren,
   ProtectedRouteRoute: ProtectedRouteRouteWithChildren,
 }

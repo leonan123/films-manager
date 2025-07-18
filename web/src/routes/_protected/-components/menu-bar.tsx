@@ -27,8 +27,8 @@ export function MenuBar() {
         </Link>
 
         <Link
-          to="/my-films"
-          data-active={childMatch.fullPath.endsWith('/my-films/')}
+          to="/my-movies"
+          data-active={childMatch.fullPath.endsWith('/my-movies/')}
           className="text-muted data-[active=true]:bg-accent data-[active=true]:text-accent-foreground flex h-10 items-center justify-center rounded-xl bg-transparent px-3"
         >
           <FilmSlateIcon size={20} className="mr-2" />

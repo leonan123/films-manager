@@ -7,7 +7,7 @@ import { seo } from '@/utils/seo'
 
 import { SearchFilmsForm } from '../-components/search-films-form'
 
-export const Route = createFileRoute('/_protected/my-films/')({
+export const Route = createFileRoute('/_protected/my-movies/')({
   head: () => ({
     meta: [
       ...seo({
@@ -33,7 +33,7 @@ function MyFilmsPage() {
           />
 
           <Button asChild>
-            <Link to="/my-films/new">
+            <Link to="/my-movies/new">
               <PlusIcon size={20} />
               Novo
             </Link>

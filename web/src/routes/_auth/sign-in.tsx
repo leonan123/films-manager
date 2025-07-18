@@ -18,7 +18,7 @@ import { authClient } from '@/lib/auth'
 import { seo } from '@/utils/seo'
 
 export const Route = createFileRoute('/_auth/sign-in')({
-  component: RouteComponent,
+  component: SignInPage,
   head: () => ({
     meta: [...seo({ title: 'Login' })],
   }),
@@ -33,7 +33,7 @@ const signInSchema = z.object({
 
 type signInData = z.infer<typeof signInSchema>
 
-function RouteComponent() {
+function SignInPage() {
   const navigate = useNavigate()
   const form = useForm<signInData>({
     resolver: zodResolver(signInSchema),
@@ -55,7 +55,7 @@ function RouteComponent() {
     }
 
     if (data?.user) {
-      navigate({ to: '/' })
+      navigate({ to: '/explore' })
     }
   }
 

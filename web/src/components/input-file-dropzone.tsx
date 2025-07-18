@@ -1,9 +1,13 @@
 import { AlertCircleIcon, ImageIcon, UploadIcon, XIcon } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { useFileUpload } from '@/hooks/use-file-upload'
+import { type FileWithPreview, useFileUpload } from '@/hooks/use-file-upload'
 
-export default function InputFileDropzone() {
+interface InputFileDropzoneProps {
+  onFilesChange?: (files: FileWithPreview[]) => void
+}
+
+export function InputFileDropzone({ onFilesChange }: InputFileDropzoneProps) {
   const maxSizeMB = 2
   const maxSize = maxSizeMB * 1024 * 1024
 
@@ -21,13 +25,13 @@ export default function InputFileDropzone() {
   ] = useFileUpload({
     accept: 'image/svg+xml,image/png,image/jpeg,image/jpg,image/gif',
     maxSize,
+    onFilesChange,
   })
   const previewUrl = files[0]?.preview || null
 
   return (
     <div className="flex size-full flex-col gap-2">
       <div className="relative flex-1">
-        {/* Drop area */}
         <div
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}

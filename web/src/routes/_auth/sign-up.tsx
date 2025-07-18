@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { EnvelopeIcon, PasswordIcon, UserIcon } from '@phosphor-icons/react'
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -18,7 +18,7 @@ import { authClient } from '@/lib/auth'
 import { seo } from '@/utils/seo'
 
 export const Route = createFileRoute('/_auth/sign-up')({
-  component: RouteComponent,
+  component: SignUpPage,
   head: () => ({
     meta: [...seo({ title: 'Criar conta' })],
   }),
@@ -34,7 +34,9 @@ const signUpSchema = z.object({
 
 type signUpData = z.infer<typeof signUpSchema>
 
-function RouteComponent() {
+function SignUpPage() {
+  const navigate = useNavigate()
+
   const form = useForm<signUpData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -51,7 +53,13 @@ function RouteComponent() {
       name: values.name,
     })
 
-    console.log(response)
+    if (response.error) {
+      console.log(response.error)
+    }
+
+    if (response.data?.user) {
+      navigate({ to: '/explore' })
+    }
   }
 
   return (

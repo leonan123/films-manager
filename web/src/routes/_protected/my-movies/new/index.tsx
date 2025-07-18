@@ -4,11 +4,12 @@ import {
   FilmSlateIcon,
   TagIcon,
 } from '@phosphor-icons/react'
+import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
-import InputFileDropzone from '@/components/input-file-dropzone'
+import { InputFileDropzone } from '@/components/input-file-dropzone'
 import { Button } from '@/components/ui/button'
 import {
   Form,
@@ -27,9 +28,10 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
+import type { FileWithPreview } from '@/hooks/use-file-upload'
 import { seo } from '@/utils/seo'
 
-export const Route = createFileRoute('/_protected/my-films/new/')({
+export const Route = createFileRoute('/_protected/my-movies/new/')({
   head: () => ({
     meta: [...seo({ title: 'Novo filme' })],
   }),
@@ -49,12 +51,12 @@ const categoriesOptions = [
 
 const newFilmFormSchema = z.object({
   title: z.string().trim().min(3, { message: 'Mínimo de 3 caracteres' }),
-  categories: z.string().trim().min(1, { message: 'Selecione uma categoria' }),
+  category: z.string().trim().min(1, { message: 'Selecione uma categoria' }),
   year: z.coerce
     .number({ required_error: 'Ano obrigatório' })
     .min(3, { message: 'Mínimo de 3 caracteres' }),
   description: z.string().trim().min(3, { message: 'Mínimo de 3 caracteres' }),
-  image: z.instanceof(File),
+  image: z.instanceof(File).optional(),
 })
 
 type NewFilmFormData = z.infer<typeof newFilmFormSchema>
@@ -64,21 +66,52 @@ function NewFilmPage() {
     resolver: zodResolver(newFilmFormSchema),
     defaultValues: {
       title: '',
-      categories: '',
+      category: '',
       year: 0,
       description: '',
-      image: new File([], ''),
+      image: undefined,
+    },
+  })
+
+  const { mutate: newMovie } = useMutation({
+    mutationFn: async (data: NewFilmFormData) => {
+      const formData = new FormData()
+
+      formData.append('title', data.title)
+      formData.append('category', data.category)
+      formData.append('year', String(data.year))
+      formData.append('description', data.description)
+
+      if (data.image) {
+        formData.append('image', data.image)
+      }
+
+      const response = await fetch('http://localhost:3333/api/v1/movies/new', {
+        method: 'POST',
+        body: formData,
+      })
+
+      console.log(await response.json())
     },
   })
 
   async function onSubmit(values: NewFilmFormData) {
-    console.log(values)
+    await newMovie(values)
+  }
+
+  function handleFileDropzoneChange(files: FileWithPreview[]) {
+    if (files.length === 0) {
+      form.setValue('image', undefined)
+      return
+    }
+
+    form.setValue('image', files[0].file as File)
   }
 
   return (
     <div className="flex h-[490px] w-full items-center gap-12">
       <div className="flex size-full max-w-[381px] items-center justify-center">
-        <InputFileDropzone />
+        <InputFileDropzone onFilesChange={handleFileDropzoneChange} />
       </div>
 
       <div className="size-full space-y-6">
@@ -132,7 +165,7 @@ function NewFilmPage() {
 
                 <FormField
                   control={form.control}
-                  name="categories"
+                  name="category"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="sr-only">Categoria</FormLabel>
@@ -187,7 +220,7 @@ function NewFilmPage() {
 
             <div className="flex justify-end gap-4">
               <Button variant="ghost" type="button" asChild>
-                <Link to="/my-films">Cancelar</Link>
+                <Link to="/my-movies">Cancelar</Link>
               </Button>
 
               <Button type="submit" className="w-fil">
