@@ -1,6 +1,4 @@
-import { createFileRoute, Outlet, redirect } from '@tanstack/react-router'
-
-import { authClient } from '@/lib/auth'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
 
 import { MenuBar } from './-components/menu-bar'
 

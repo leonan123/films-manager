@@ -5,9 +5,13 @@ import { type FileWithPreview, useFileUpload } from '@/hooks/use-file-upload'
 
 interface InputFileDropzoneProps {
   onFilesChange?: (files: FileWithPreview[]) => void
+  isReset?: boolean
 }
 
-export function InputFileDropzone({ onFilesChange }: InputFileDropzoneProps) {
+export function InputFileDropzone({
+  onFilesChange,
+  isReset,
+}: InputFileDropzoneProps) {
   const maxSizeMB = 2
   const maxSize = maxSizeMB * 1024 * 1024
 
@@ -27,7 +31,12 @@ export function InputFileDropzone({ onFilesChange }: InputFileDropzoneProps) {
     maxSize,
     onFilesChange,
   })
+
   const previewUrl = files[0]?.preview || null
+
+  if (isReset && files.length > 0) {
+    removeFile(files[0]?.id || '')
+  }
 
   return (
     <div className="flex size-full flex-col gap-2">

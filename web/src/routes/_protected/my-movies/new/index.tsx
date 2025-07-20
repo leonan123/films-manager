@@ -6,7 +6,9 @@ import {
 } from '@phosphor-icons/react'
 import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { toast } from 'sonner'
 import { z } from 'zod'
 
 import { InputFileDropzone } from '@/components/input-file-dropzone'
@@ -62,6 +64,7 @@ const newFilmFormSchema = z.object({
 type NewFilmFormData = z.infer<typeof newFilmFormSchema>
 
 function NewFilmPage() {
+  const [resetFile, setResetFile] = useState(false)
   const form = useForm<NewFilmFormData>({
     resolver: zodResolver(newFilmFormSchema),
     defaultValues: {
@@ -88,15 +91,32 @@ function NewFilmPage() {
 
       const response = await fetch('http://localhost:3333/api/v1/movies/new', {
         method: 'POST',
+        credentials: 'include',
         body: formData,
       })
 
-      console.log(await response.json())
+      if (!response.ok) {
+        toast.error('Erro ao criar filme')
+        console.error(await response.json())
+        return
+      }
+
+      toast(
+        <div>
+          Filme criado com sucesso. Veja em{' '}
+          <Link to="/my-movies" rel="noopener noreferrer" className="underline">
+            Meus filmes
+          </Link>
+        </div>,
+      )
+
+      form.reset()
+      setResetFile(true)
     },
   })
 
   async function onSubmit(values: NewFilmFormData) {
-    await newMovie(values)
+    newMovie(values)
   }
 
   function handleFileDropzoneChange(files: FileWithPreview[]) {
@@ -111,7 +131,10 @@ function NewFilmPage() {
   return (
     <div className="flex h-[490px] w-full items-center gap-12">
       <div className="flex size-full max-w-[381px] items-center justify-center">
-        <InputFileDropzone onFilesChange={handleFileDropzoneChange} />
+        <InputFileDropzone
+          onFilesChange={handleFileDropzoneChange}
+          isReset={resetFile}
+        />
       </div>
 
       <div className="size-full space-y-6">

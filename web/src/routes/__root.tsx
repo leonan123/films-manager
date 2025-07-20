@@ -9,6 +9,7 @@ import {
 } from '@tanstack/react-router'
 import type { ReactNode } from 'react'
 
+import { Toaster } from '@/components/ui/sonner'
 import { queryClient } from '@/lib/react-query'
 
 import appCss from '../styles/app.css?url'
@@ -72,6 +73,7 @@ function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
       <body>
         <QueryClientProvider client={queryClient}>
           {children}
+          <Toaster richColors closeButton />
           <Scripts />
         </QueryClientProvider>
       </body>
