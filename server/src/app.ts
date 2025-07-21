@@ -12,7 +12,9 @@ import { authClient } from './../../web/src/lib/auth'
 import { errorHandler } from './error-handler'
 import { routes } from './routes'
 
-export const app = fastify().withTypeProvider<ZodTypeProvider>()
+export const app = fastify({
+  logger: true,
+}).withTypeProvider<ZodTypeProvider>()
 
 const corsOpt: FastifyCorsOptions = {
   origin: ['http://localhost:5173'],
@@ -22,6 +24,15 @@ const corsOpt: FastifyCorsOptions = {
   exposedHeaders: ['Set-Cookie'],
   maxAge: 86400,
 }
+
+app.register(fastifyCors, corsOpt)
+
+app.register(fastifyMultipart, {
+  limits: {
+    fileSize: 2 * 1024 * 1024, // 2 MB
+    files: 1,
+  },
+})
 
 app.decorate(
   'authenticate',
@@ -37,8 +48,8 @@ app.decorate(
       return reply.status(401).send({ message: 'Unauthorized' })
     }
 
-    app.decorateRequest('session', session.data.session)
-    app.decorateRequest('user', session.data.user)
+    req.session = session.data.session
+    req.user = session.data.user
   },
 )
 
@@ -46,14 +57,5 @@ app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 
 app.setErrorHandler(errorHandler)
-
-app.register(fastifyCors, corsOpt)
-
-app.register(fastifyMultipart, {
-  limits: {
-    fileSize: 2 * 1024 * 1024, // 2 MB
-    files: 1,
-  },
-})
 
 app.register(routes, { prefix: 'api/v1' })

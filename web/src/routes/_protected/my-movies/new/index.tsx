@@ -2,9 +2,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   CalendarBlankIcon,
   FilmSlateIcon,
+  SpinnerIcon,
   TagIcon,
 } from '@phosphor-icons/react'
-import { useMutation } from '@tanstack/react-query'
 import { createFileRoute, Link } from '@tanstack/react-router'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -31,6 +31,7 @@ import {
 } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import type { FileWithPreview } from '@/hooks/use-file-upload'
+import { useCreateMovie } from '@/http/use-create-movie'
 import { seo } from '@/utils/seo'
 
 export const Route = createFileRoute('/_protected/my-movies/new/')({
@@ -76,31 +77,8 @@ function NewFilmPage() {
     },
   })
 
-  const { mutate: newMovie } = useMutation({
-    mutationFn: async (data: NewFilmFormData) => {
-      const formData = new FormData()
-
-      formData.append('title', data.title)
-      formData.append('category', data.category)
-      formData.append('year', String(data.year))
-      formData.append('description', data.description)
-
-      if (data.image) {
-        formData.append('image', data.image)
-      }
-
-      const response = await fetch('http://localhost:3333/api/v1/movies/new', {
-        method: 'POST',
-        credentials: 'include',
-        body: formData,
-      })
-
-      if (!response.ok) {
-        toast.error('Erro ao criar filme')
-        console.error(await response.json())
-        return
-      }
-
+  const { mutate: newMovie } = useCreateMovie({
+    onSuccess: () => {
       toast(
         <div>
           Filme criado com sucesso. Veja em{' '}
@@ -113,9 +91,12 @@ function NewFilmPage() {
       form.reset()
       setResetFile(true)
     },
+    onError: () => {
+      toast.error('Erro ao criar filme')
+    },
   })
 
-  async function onSubmit(values: NewFilmFormData) {
+  function onSubmit(values: NewFilmFormData) {
     newMovie(values)
   }
 
@@ -246,7 +227,14 @@ function NewFilmPage() {
                 <Link to="/my-movies">Cancelar</Link>
               </Button>
 
-              <Button type="submit" className="w-fil">
+              <Button
+                type="submit"
+                className="w-fil"
+                disabled={form.formState.isSubmitting}
+              >
+                {form.formState.isSubmitting && (
+                  <SpinnerIcon size={16} className="mr-2 animate-spin" />
+                )}
                 Salvar
               </Button>
             </div>

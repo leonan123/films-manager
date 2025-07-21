@@ -40,6 +40,8 @@ export async function newMovie(data: newMovieInput) {
 
     const fileStream = data.image.file
 
+    console.log('fileStream', fileStream)
+
     const thumbnailUrl = await storageService.uploadFile({
       mimetype: data.image.mimetype,
       fileName: parsedFilename,

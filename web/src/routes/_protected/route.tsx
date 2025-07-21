@@ -4,18 +4,6 @@ import { MenuBar } from './-components/menu-bar'
 
 export const Route = createFileRoute('/_protected')({
   component: RouteComponent,
-  beforeLoad: async () => {
-    // const session = await authClient.getSession({
-    //   fetchOptions: {
-    //     credentials: 'include',
-    //   },
-    // })
-    // if (!session.data?.user) {
-    //   return redirect({
-    //     to: '/sign-in',
-    //   })
-    // }
-  },
 })
 
 function RouteComponent() {
@@ -23,7 +11,7 @@ function RouteComponent() {
     <div>
       <MenuBar />
 
-      <div className="mx-auto mt-16 max-w-[1366px]">
+      <div className="mx-auto mt-16 max-w-[1366px] px-4">
         <Outlet />
       </div>
     </div>
